@@ -46,42 +46,38 @@ int parseCmd(char* cmd, char** cmdTokens)
 
 int checkPipeRedirect(char* cmd)
 {
-    idInput = 0;
-    idOutput = 0;
-    last = 0;
-    customPipe = 0;
-    redirectInput = 0;
-    redirectOutput = 0;
+    idInput = NOT_EXIST;
+    idOutput = NOT_EXIST;
+    last = NOT_EXIST;
+    customPipe = NOT_EXIST;
+    redirectInput = NOT_EXIST;
+    redirectOutput = NOT_EXIST;
 
     int i = 0;
     for (i = 0; cmd[i]; i++)
     {
         if (cmd[i] == '>')
         {
-            redirectOutput = 1;
+            redirectOutput = EXIST;
             if (last == 0)
                 last = 1;
             if (idOutput == 0)
-                idOutput = i;
+                idOutput = i; // need to know the index to get the name
         }
         if (cmd[i] == '<')
         {
-            redirectInput = 1;
+            redirectInput = EXIST;
             if (idInput == 0)
-                idInput = i;
+                idInput = i; // need to know the index to get the name
         }
         if (cmd[i] == '|')
         {
-            customPipe = 1;
+            customPipe = EXIST;
         }
 
     }
 
-    if (redirectInput || redirectOutput)
-        return 1;
-    else
-        return 0;
-
+    return customPipe;
 }
 
 /*
@@ -95,12 +91,12 @@ int checkPipeRedirect(char* cmd)
 int parseForRedirect(char* cmd, char** cmdTokens)
 {
     char* tempCmd = strdup(cmd);
-    idInput = 0;
-    idOutput = 0;
-    last = 0;
-    customPipe = 0;
-    redirectInput = 0;
-    redirectOutput = 0;
+    idInput = NOT_EXIST;
+    idOutput = NOT_EXIST;
+    last = NOT_EXIST;
+    customPipe = NOT_EXIST;
+    redirectInput = NOT_EXIST;
+    redirectOutput = NOT_EXIST;
     fileOutputName = "\0";
     fileInputName = "\0";
 
@@ -111,13 +107,13 @@ int parseForRedirect(char* cmd, char** cmdTokens)
     {
         if (cmd[i] == '<')
         {
-            redirectInput = 1;
+            redirectInput = EXIST;
             if (idOutput == 0)
                 idOutput = i;
         }
         if (cmd[i] == '>')
         {
-            redirectOutput = 1;
+            redirectOutput = EXIST;
             if (last == 0) // output is done last
                 last = 1;
             if (idOutput == 0)

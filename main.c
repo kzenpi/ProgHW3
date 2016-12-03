@@ -14,11 +14,35 @@ int main(int argc, char* argv [])
             perror("fgets failed");
             exit(ERROR);
         }
-        int numOfCmds = parseCmdLine(cmdline, cmds);
+        int numOfCmds = parseCmdLine(cmdline, cmds); // parse commandline, into commands
 
         for (i = 0; i < numOfCmds; i++)
         {
-            printf("CMD:%d\n", numOfCmds);
+            fileInputName = NULL;
+            fileOutputName = NULL;
+            numOfPipes = 0;
+
+            char* tempCmd = strdup(cmds[i]);
+            char** cmdTokens = malloc((sizeof (char)*BUFFER) * BUFFER);
+            for (j = 0; j < BUFFER; j++)
+                cmdTokens[j] = '\0';
+
+            if (checkPipeRedirect(strdup(cmds[i])) == EXIST) // PIPE
+            {
+                printf("YES PIPE\n");
+
+            } else // NO PIPE
+            {
+                printf("NO PIPE\n");
+                if (redirectInput == EXIST || redirectOutput == EXIST) // REDIRECTION
+                {
+                    printf("there is redirect\n");
+                } else
+                {
+                    printf("there is no redirect\n");
+
+                }
+            }
         }
 
 

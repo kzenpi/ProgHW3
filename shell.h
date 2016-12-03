@@ -16,10 +16,14 @@
 #define NO_ERROR 0
 #define ERROR -1
 
+#define EXIST 1
+#define NOT_EXIST 0
+
 #define CMD_DELIMITERS " \t\n"
 
 
 /**********     Variables   *****/
+int numOfPipes;
 int redirectInput;
 int redirectOutput;
 int idInput; // know where the < is in comdline
