@@ -8,11 +8,37 @@
 #include <string.h>
 #include <sys/wait.h>
 
-#define MAX_ARGS 20
-#define BUFSIZ 1024
 
-int parseCmdLine(char* cmdline, char* cmds[]);
-void execute(char* cmdline);
+/*********************************************/
+#define MAX_ARGS 20
+#define BUFFER 1024
+
+#define NO_ERROR 0
+#define ERROR -1
+
+#define CMD_DELIMITERS " \t\n"
+
+
+/**********     Variables   *****/
+int redirectInput;
+int redirectOutput;
+int idInput; // know where the < is in comdline
+int idOutput; // know where the > is in cmdline
+int last; //   to make sure output is done last
+int customPipe; // pipe is already in unistd.h
+char* fileInputName;
+char* fileOutputName;
+
+
+/*********  FUNCTIONS   ***************/
+// parser.c
+int parseCmdLine(char* cmdline, char** cmds);
+int parseCmd(char* cmd, char** cmdTokens);
+int checkPipeRedirect(char* cmd);
+int parseForRedirect(char* cmd, char** cmdTokens);
+
+// execute.c
+void execute(char** cmdTokens);
 
 #endif /* SHELL_H */
 

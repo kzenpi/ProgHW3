@@ -1,40 +1,34 @@
 #include "shell.h"
 
-void execute(char* cmdline)
+void execute(char** cmdTokens)
 {
-    int pid, async;
-    char* args[MAX_ARGS];
-
-
-    int nargs = parseCmdLine(cmdline, args);
-    if (nargs <= 0) return;
-
-    if (!strcmp(args[0], "quit") || !strcmp(args[0], "exit"))
+    if (!strcmp(cmdTokens[0], "quit") || !strcmp(cmdTokens[0], "exit"))
     {
-        exit(0);
+        exit(NO_ERROR);
     }
+    int pid = fork();
 
-    /* check if async call */
-    if (!strcmp(args[nargs - 1], "&"))
+    if (pid == 0) // child process
     {
-        async = 1;
-        args[--nargs] = 0;
-    } else async = 0;
-
-    pid = fork();
-    if (pid == 0)
-    { /* child process */
-        execvp(args[0], args);
-        /* return only when exec fails */
+        int fd;
+        if (redirectOutput)
+        {
+            fd = open("test", O_CREAT | O_WRONLY | O_TRUNC);
+            dup2(fd, 1);
+            close(fd);
+        }
+        execvp(cmdTokens[0], cmdTokens);
+        
+        // return only when exec fails 
         perror("exec failed");
         exit(-1);
-    } else if (pid > 0)
-    { /* parent process */
-        if (!async) waitpid(pid, NULL, 0);
-        else printf("this is an async call\n");
-    } else
-    { /* error occurred */
+    } else if (pid > 0) // parent process
+    {
+        waitpid(pid, NULL, 0);
+
+    } else // error occured
+    {
         perror("fork failed");
-        exit(1);
+        exit(ERROR);
     }
 }

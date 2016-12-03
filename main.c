@@ -2,22 +2,28 @@
 
 int main(int argc, char* argv [])
 {
-    char cmdline[BUFSIZ];
-    char* cmds[MAX_ARGS];
-
-    for (;;)
+    while (1)
     {
+        int i, j;
+        char** cmds = malloc((sizeof (char)*BUFFER) * BUFFER);
+        for (j = 0; j < BUFFER; j++) cmds[j] = '\0'; // NULL doesn't work
+        char* cmdline = malloc((sizeof (char)*BUFFER) * BUFFER);
         printf("COP4338$ ");
-        if (fgets(cmdline, BUFSIZ, stdin) == NULL)
+        if (fgets(cmdline, BUFFER, stdin) == NULL)
         {
             perror("fgets failed");
-            exit(1);
+            exit(ERROR);
+        }
+        int numOfCmds = parseCmdLine(cmdline, cmds);
+
+        for (i = 0; i < numOfCmds; i++)
+        {
+            printf("CMD:%d\n", numOfCmds);
         }
 
-        //        int numOfCmds = parseCmdLine(cmdline, cmds);
-        //        printf("cmd:%s\n", cmdline);
-        //        printf("num:%d\n", numOfCmds);
-        execute(cmdline);
+
+        free(cmdline);
+        free(cmds);
     }
-    return 0;
+    return NO_ERROR;
 }
