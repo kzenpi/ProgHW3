@@ -33,14 +33,14 @@ int main(int argc, char* argv [])
 
             } else // NO PIPE
             {
-                printf("NO PIPE\n");
                 if (redirectInput == EXIST || redirectOutput == EXIST) // REDIRECTION
                 {
                     printf("there is redirect\n");
-                } else
+                } else  // NO REDIRECTION
                 {
                     printf("there is no redirect\n");
-
+                    int tokens = parseCmd(strdup(cmds[i]), cmdTokens);
+                    execute(cmdTokens);
                 }
             }
         }

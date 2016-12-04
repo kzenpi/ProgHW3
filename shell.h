@@ -43,6 +43,5 @@ int parseForRedirect(char* cmd, char** cmdTokens);
 
 // execute.c
 void execute(char** cmdTokens);
-
 #endif /* SHELL_H */
 

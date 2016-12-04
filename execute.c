@@ -10,18 +10,47 @@ void execute(char** cmdTokens)
 
     if (pid == 0) // child process
     {
-        int fd;
+        int fdIn = 0;
+        int fdOut = 0;
+
+        if (redirectInput)
+        {
+            fdIn = open(fileInputName, O_RDONLY);
+            if (fdIn < 0)
+            {
+                perror(fileInputName);
+            }
+            dup2(fdIn, STDIN_FILENO);
+            close(fdIn);
+
+            if (fdIn == -1)
+                exit(ERROR);
+        }
         if (redirectOutput)
         {
-            fd = open("test", O_CREAT | O_WRONLY | O_TRUNC);
-            dup2(fd, 1);
-            close(fd);
+            if (last == 1) // if writing a new output
+            {
+                fdOut = open(fileOutputName, O_CREAT | O_WRONLY | O_TRUNC);
+            } else if (last == 2) // if appending to existing file
+            {
+                fdOut = open(fileOutputName, O_CREAT | O_WRONLY | O_APPEND);
+            }
+            if (fdOut < 0)
+            {
+                perror(fileOutputName);
+            }
+            dup2(fdOut, STDOUT_FILENO);
+            close(fdOut);
+
+            if (fdOut == -1)
+                exit(ERROR);
         }
-        execvp(cmdTokens[0], cmdTokens);
         
+        // executing the command
+        execvp(cmdTokens[0], cmdTokens);
         // return only when exec fails 
         perror("exec failed");
-        exit(-1);
+        exit(ERROR);
     } else if (pid > 0) // parent process
     {
         waitpid(pid, NULL, 0);
