@@ -1,6 +1,7 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -42,6 +43,9 @@ int checkPipeRedirect(char* cmd);
 int parseForRedirect(char* cmd, char** cmdTokens);
 
 // execute.c
-void execute(char** cmdTokens);
+void execute(int tokens, char** cmdTokens);
+void runCommand(char** cmdTokens);
+void pipeAndRedirect(char* cmd);
+
 #endif /* SHELL_H */
 

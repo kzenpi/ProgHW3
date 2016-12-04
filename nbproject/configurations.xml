@@ -14,7 +14,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>execute.c</itemPath>
-      <itemPath>main.c</itemPath>
+      <itemPath>myshell.c</itemPath>
       <itemPath>parser.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -41,7 +41,7 @@
       </compileType>
       <item path="execute.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="main.c" ex="false" tool="0" flavor2="0">
+      <item path="myshell.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="parser.c" ex="false" tool="0" flavor2="0">
       </item>
@@ -70,7 +70,7 @@
       </compileType>
       <item path="execute.c" ex="false" tool="0" flavor2="0">
       </item>
-      <item path="main.c" ex="false" tool="0" flavor2="0">
+      <item path="myshell.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="parser.c" ex="false" tool="0" flavor2="0">
       </item>

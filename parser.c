@@ -12,12 +12,11 @@ int parseCmdLine(char* cmdline, char** cmds)
 {
     int numOfCmds = 0;
 
-    char* token = strtok(cmdline, CMD_DELIMITERS);
+    char* token = strtok(cmdline, ";");
     while (token != NULL)
     {
-        printf("token:%s\n", token);
         cmds[numOfCmds++] = token;
-        token = strtok(NULL, CMD_DELIMITERS);
+        token = strtok(NULL, ";");
     }
 
     return numOfCmds;
@@ -58,6 +57,7 @@ int checkPipeRedirect(char* cmd)
     {
         if (cmd[i] == '>')
         {
+            printf("Output exist\n");
             redirectOutput = EXIST;
             if (last == 0)
                 last = 1;
@@ -66,6 +66,7 @@ int checkPipeRedirect(char* cmd)
         }
         if (cmd[i] == '<')
         {
+            printf("Input exist\n");
             redirectInput = EXIST;
             if (idInput == 0)
                 idInput = i; // need to know the index to get the name
@@ -74,7 +75,6 @@ int checkPipeRedirect(char* cmd)
         {
             customPipe = EXIST;
         }
-
     }
 
     return customPipe;
@@ -94,14 +94,13 @@ int parseForRedirect(char* cmd, char** cmdTokens)
     idInput = NOT_EXIST;
     idOutput = NOT_EXIST;
     last = NOT_EXIST;
-    customPipe = NOT_EXIST;
     redirectInput = NOT_EXIST;
     redirectOutput = NOT_EXIST;
-    fileOutputName = "\0";
-    fileInputName = "\0";
+    fileOutputName = NULL;
+    fileInputName = NULL;
 
+    printf("before tok\n");
     int tok = 0;
-
     int i = 0;
     for (i = 0; cmd[i]; i++) // check if there is redirection
     {
@@ -123,8 +122,9 @@ int parseForRedirect(char* cmd, char** cmdTokens)
             last = 2;
     }
 
-    // if there are redirections for both Input and Output
-    if (redirectOutput && redirectOutput)
+    printf("before output && input");
+            // if there are redirections for both Input and Output
+    if (redirectInput && redirectOutput)
     {
         char* token = strtok(tempCmd, " <>\t\n"); // CMD_DELIMITERS not used because need to check for all redirection
 
@@ -151,6 +151,7 @@ int parseForRedirect(char* cmd, char** cmdTokens)
         return tok - 2;
     }
 
+        printf("before input");
     // standardinput
     if (redirectInput)
     {
@@ -182,10 +183,16 @@ int parseForRedirect(char* cmd, char** cmdTokens)
     // standardoutput and append
     if (redirectOutput)
     {
+        printf("In redirect outpput \n");
         char** redirectOutputCmd = malloc((sizeof (char)*BUFFER) * BUFFER);
         char* tempCmd = strdup(cmd);
+        char* token;
 
-        char* token = strtok(tempCmd, ">");
+        if (last == 1) // write to file
+            token = strtok(tempCmd, ">");
+        else if (last == 2) // append to file
+            token = strtok(tempCmd, ">>");
+
         while (token != NULL)
         {
             redirectOutputCmd[tok++] = token;
@@ -211,7 +218,7 @@ int parseForRedirect(char* cmd, char** cmdTokens)
         free(redirectOutputCmd);
     }
 
-    if (!redirectInput && !redirectOutput)
+    if (redirectInput == NOT_EXIST && redirectOutput == NOT_EXIST)
         return parseCmd(strdup(cmd), cmdTokens);
     else
         return tok;

@@ -1,6 +1,16 @@
 #include "shell.h"
 
-void execute(char** cmdTokens)
+void execute(int tokens, char** cmdTokens)
+{
+    if (tokens > 0)
+    {
+        if (isalpha(cmdTokens[0][0]))
+            runCommand(cmdTokens);
+    }
+    free(cmdTokens);    // so that it won't execute multiple times
+}
+
+void runCommand(char** cmdTokens)
 {
     if (!strcmp(cmdTokens[0], "quit") || !strcmp(cmdTokens[0], "exit"))
     {
@@ -30,10 +40,10 @@ void execute(char** cmdTokens)
         {
             if (last == 1) // if writing a new output
             {
-                fdOut = open(fileOutputName, O_CREAT | O_WRONLY | O_TRUNC);
+                fdOut = open(fileOutputName, O_CREAT | O_WRONLY | O_TRUNC, 0666);
             } else if (last == 2) // if appending to existing file
             {
-                fdOut = open(fileOutputName, O_CREAT | O_WRONLY | O_APPEND);
+                fdOut = open(fileOutputName, O_CREAT | O_WRONLY | O_APPEND, 0666);
             }
             if (fdOut < 0)
             {
@@ -45,7 +55,7 @@ void execute(char** cmdTokens)
             if (fdOut == -1)
                 exit(ERROR);
         }
-        
+
         // executing the command
         execvp(cmdTokens[0], cmdTokens);
         // return only when exec fails 
@@ -57,7 +67,13 @@ void execute(char** cmdTokens)
 
     } else // error occured
     {
+
         perror("fork failed");
         exit(ERROR);
     }
+}
+
+void pipeAndRedirect(char* cmd)
+{
+
 }

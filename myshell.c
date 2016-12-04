@@ -5,6 +5,7 @@ int main(int argc, char* argv [])
     while (1)
     {
         int i, j;
+
         char** cmds = malloc((sizeof (char)*BUFFER) * BUFFER);
         for (j = 0; j < BUFFER; j++) cmds[j] = '\0'; // NULL doesn't work
         char* cmdline = malloc((sizeof (char)*BUFFER) * BUFFER);
@@ -33,14 +34,20 @@ int main(int argc, char* argv [])
 
             } else // NO PIPE
             {
+                printf("reInput: %d\n", redirectInput);
+                printf("reOutput: %d\n", redirectOutput);
+
                 if (redirectInput == EXIST || redirectOutput == EXIST) // REDIRECTION
                 {
                     printf("there is redirect\n");
-                } else  // NO REDIRECTION
+                    int tokens = parseForRedirect(strdup(tempCmd), cmdTokens);
+                    printf("there is redirect 22\n");
+                    execute(tokens, cmdTokens);
+                } else // NO REDIRECTION
                 {
                     printf("there is no redirect\n");
                     int tokens = parseCmd(strdup(cmds[i]), cmdTokens);
-                    execute(cmdTokens);
+                    execute(tokens, cmdTokens);
                 }
             }
         }

@@ -36,7 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/execute.o \
-	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/myshell.o \
 	${OBJECTDIR}/parser.o
 
 
@@ -69,10 +69,10 @@ ${OBJECTDIR}/execute.o: execute.c
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/execute.o execute.c
 
-${OBJECTDIR}/main.o: main.c
+${OBJECTDIR}/myshell.o: myshell.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/myshell.o myshell.c
 
 ${OBJECTDIR}/parser.o: parser.c
 	${MKDIR} -p ${OBJECTDIR}

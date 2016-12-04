@@ -1,5 +1,5 @@
-myshell:	execute.o parser.o main.o
-	$(CC) execute.o parser.o main.o -o $@
+myshell:	execute.o parser.o myshell.o
+	$(CC) execute.o parser.o myshell.o -o $@
 
 execute.o:	execute.c shell.h
 	$(CC) -Wall -c $< -o $@
@@ -7,7 +7,7 @@ execute.o:	execute.c shell.h
 parser.o:	parser.c shell.h
 	$(CC) -Wall -c $< -o $@
 
-main.o:	main.c shell.h 
+myshell.o:	myshell.c shell.h 
 	$(CC) -Wall -c $< -o $@
 
 clean:
