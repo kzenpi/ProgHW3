@@ -34,24 +34,22 @@ int main(int argc, char* argv [])
 
             } else // NO PIPE
             {
-                printf("reInput: %d\n", redirectInput);
-                printf("reOutput: %d\n", redirectOutput);
-
                 if (redirectInput == EXIST || redirectOutput == EXIST) // REDIRECTION
                 {
-                    printf("there is redirect\n");
                     int tokens = parseForRedirect(strdup(tempCmd), cmdTokens);
-                    printf("there is redirect 22\n");
+                    printf("filename: %s\n", fileInputName);
+                    printf("before execute\n");
                     execute(tokens, cmdTokens);
+                    printf("after execute\n");
+                    printf("filename: %s\n", fileInputName);
+
                 } else // NO REDIRECTION
                 {
-                    printf("there is no redirect\n");
                     int tokens = parseCmd(strdup(cmds[i]), cmdTokens);
                     execute(tokens, cmdTokens);
                 }
             }
         }
-
 
         free(cmdline);
         free(cmds);

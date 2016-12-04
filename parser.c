@@ -45,8 +45,8 @@ int parseCmd(char* cmd, char** cmdTokens)
 
 int checkPipeRedirect(char* cmd)
 {
-    idInput = NOT_EXIST;
-    idOutput = NOT_EXIST;
+    indexInputFile = NOT_EXIST;
+    indexOutputFile = NOT_EXIST;
     last = NOT_EXIST;
     customPipe = NOT_EXIST;
     redirectInput = NOT_EXIST;
@@ -57,19 +57,17 @@ int checkPipeRedirect(char* cmd)
     {
         if (cmd[i] == '>')
         {
-            printf("Output exist\n");
             redirectOutput = EXIST;
             if (last == 0)
                 last = 1;
-            if (idOutput == 0)
-                idOutput = i; // need to know the index to get the name
+            if (indexOutputFile == 0)
+                indexOutputFile = i; // need to know the index to get the name
         }
         if (cmd[i] == '<')
         {
-            printf("Input exist\n");
             redirectInput = EXIST;
-            if (idInput == 0)
-                idInput = i; // need to know the index to get the name
+            if (indexInputFile == 0)
+                indexInputFile = i; // need to know the index to get the name
         }
         if (cmd[i] == '|')
         {
@@ -91,15 +89,14 @@ int checkPipeRedirect(char* cmd)
 int parseForRedirect(char* cmd, char** cmdTokens)
 {
     char* tempCmd = strdup(cmd);
-    idInput = NOT_EXIST;
-    idOutput = NOT_EXIST;
+    indexInputFile = NOT_EXIST;
+    indexOutputFile = NOT_EXIST;
     last = NOT_EXIST;
     redirectInput = NOT_EXIST;
     redirectOutput = NOT_EXIST;
     fileOutputName = NULL;
     fileInputName = NULL;
 
-    printf("before tok\n");
     int tok = 0;
     int i = 0;
     for (i = 0; cmd[i]; i++) // check if there is redirection
@@ -107,22 +104,21 @@ int parseForRedirect(char* cmd, char** cmdTokens)
         if (cmd[i] == '<')
         {
             redirectInput = EXIST;
-            if (idOutput == 0)
-                idOutput = i;
+            if (indexOutputFile == 0)
+                indexOutputFile = i;
         }
         if (cmd[i] == '>')
         {
             redirectOutput = EXIST;
             if (last == 0) // output is done last
                 last = 1;
-            if (idOutput == 0)
-                idOutput = i;
+            if (indexOutputFile == 0)
+                indexOutputFile = i;
         }
         if (cmd[i] == '>' && cmd[i + 1] == '>') // check for append
             last = 2;
     }
 
-    printf("before output && input");
             // if there are redirections for both Input and Output
     if (redirectInput && redirectOutput)
     {
@@ -131,11 +127,11 @@ int parseForRedirect(char* cmd, char** cmdTokens)
         while (token != NULL)
         {
             cmdTokens[tok++] = strdup(token);
-            token = strtok(tempCmd, " <>\t\n");
+            token = strtok(NULL, " <>\t\n");
         }
 
         // get filenames using the ids
-        if (idInput < idOutput)
+        if (indexInputFile < indexOutputFile)
         {
             fileInputName = strdup(cmdTokens[tok - 2]);
             fileOutputName = strdup(cmdTokens[tok - 1]);
@@ -151,14 +147,13 @@ int parseForRedirect(char* cmd, char** cmdTokens)
         return tok - 2;
     }
 
-        printf("before input");
     // standardinput
     if (redirectInput)
     {
         char** redirectInputCmd = malloc((sizeof (char)*BUFFER) * BUFFER);
         char* tempCmd = strdup(cmd);
 
-        char* token = strtok(cmd, "<");
+        char* token = strtok(tempCmd, "<");
         while (token != NULL)
         {
             redirectInputCmd[tok++] = token;
@@ -166,7 +161,7 @@ int parseForRedirect(char* cmd, char** cmdTokens)
         }
 
         tempCmd = strdup(redirectInputCmd[tok - 1]);
-        token = strtok(cmd, "> |\t\n"); // the args after <
+        token = strtok(tempCmd, "> |\t\n"); // the args after <
         fileInputName = strdup(token); // FILE NAME IS AFTER >
 
         tok = 0;
@@ -183,7 +178,6 @@ int parseForRedirect(char* cmd, char** cmdTokens)
     // standardoutput and append
     if (redirectOutput)
     {
-        printf("In redirect outpput \n");
         char** redirectOutputCmd = malloc((sizeof (char)*BUFFER) * BUFFER);
         char* tempCmd = strdup(cmd);
         char* token;

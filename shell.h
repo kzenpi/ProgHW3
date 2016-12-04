@@ -27,8 +27,8 @@
 int numOfPipes;
 int redirectInput;
 int redirectOutput;
-int idInput; // know where the < is in comdline
-int idOutput; // know where the > is in cmdline
+int indexInputFile; // know where the < is in comdline
+int indexOutputFile; // know where the > is in cmdline
 int last; //   to make sure output is done last
 int customPipe; // pipe is already in unistd.h
 char* fileInputName;

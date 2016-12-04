@@ -7,7 +7,7 @@ void execute(int tokens, char** cmdTokens)
         if (isalpha(cmdTokens[0][0]))
             runCommand(cmdTokens);
     }
-    free(cmdTokens);    // so that it won't execute multiple times
+    free(cmdTokens); // so that it won't execute multiple times
 }
 
 void runCommand(char** cmdTokens)
@@ -25,15 +25,14 @@ void runCommand(char** cmdTokens)
 
         if (redirectInput)
         {
-            fdIn = open(fileInputName, O_RDONLY);
-            if (fdIn < 0)
+            if ((fdIn = open(fileInputName, O_RDONLY)) < 0)
             {
                 perror(fileInputName);
             }
             dup2(fdIn, STDIN_FILENO);
             close(fdIn);
 
-            if (fdIn == -1)
+            if (fdIn == ERROR)
                 exit(ERROR);
         }
         if (redirectOutput)
@@ -52,7 +51,7 @@ void runCommand(char** cmdTokens)
             dup2(fdOut, STDOUT_FILENO);
             close(fdOut);
 
-            if (fdOut == -1)
+            if (fdOut == ERROR)
                 exit(ERROR);
         }
 
